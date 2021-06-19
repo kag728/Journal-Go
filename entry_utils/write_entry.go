@@ -1,4 +1,4 @@
-package main
+package entry_utils
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const FILE_DIR string = "./entries"
+const FILE_DIR string = "entries"
 
-func get_current_entry() (*os.File, error) {
+func Get_current_entry() (*os.File, error) {
 	_, dir_err := os.Stat(FILE_DIR)
 	if dir_err != nil {
-		mkdir_err := os.Mkdir(FILE_DIR, 0777)
+		mkdir_err := os.Mkdir(FILE_DIR, 7777)
 		if mkdir_err != nil {
 			log.Errorf("could not create dir %s :: %s", FILE_DIR, mkdir_err)
 		}
@@ -26,7 +26,7 @@ func get_current_entry() (*os.File, error) {
 		log.Debug("Found file for today, stopping search.")
 	}
 
-	file_name := path.Join(FILE_DIR, entry_name)
+	file_name := path.Join(entry_name)
 	file, open_err := os.Open(file_name)
 	if open_err != nil {
 		file, create_err := os.Create(file_name)
@@ -38,6 +38,7 @@ func get_current_entry() (*os.File, error) {
 		return file, nil
 	}
 	log.Infof("today's entry already exists, opening")
+	log.Infof("file_name: %s, entry name: %s", file_name, file.Name())
 	return file, nil
 }
 
@@ -46,7 +47,7 @@ func get_entry_name() (string, error) {
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
 		log.Errorf("Could not open directory")
-		return "", nil
+		return "", fmt.Errorf("could not open directory %s :: %s", FILE_DIR, err)
 	}
 
 	time := time.Now()
@@ -58,7 +59,7 @@ func get_entry_name() (string, error) {
 		entry_name = strings.Join(strings.Split(entry_name, "_")[1:], "_")
 
 		if entry_name == entry_date {
-			return "", fmt.Errorf("%s already exists", entry_date)
+			break
 		}
 		prefix++
 	}

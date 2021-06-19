@@ -1,12 +1,15 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
+	"journal/entry_utils"
 
 	log "github.com/sirupsen/logrus"
+)
+
+const (
+	WRITE = "w"
+	READ  = "r"
 )
 
 func main() {
@@ -16,23 +19,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Info(action)
-	_, err = get_current_entry()
-	if err != nil {
-		log.Fatalf("Could not create or open today's entry :: %s", err)
-	}
-}
+	if action == WRITE {
+		entry, err := entry_utils.Get_current_entry()
+		if err != nil {
+			log.Fatalf("Could not create or open today's entry :: %s", err)
+		}
 
-func get_action() (string, error) {
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		log.Fatal("Could not read line for r or w.")
-	}
-	input = strings.TrimSuffix(input, "\n")
+		log.Infof("Creating editor for entry %s...", entry.Name())
+		_, err = entry_utils.Create_editor(entry)
+		if err != nil {
+			log.Fatalf("Error creating editor :: %s", err)
+		}
 
-	if input == "r" || input == "w" {
-		return input, nil
+	} else {
+		log.Fatal("Unsupported action.")
 	}
-	return "", fmt.Errorf("invalid action :: %s, please choose r or w", input)
+
 }
