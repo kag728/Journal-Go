@@ -35,9 +35,11 @@ func GetCurrentEntry() (*os.File, error) {
 		if create_err != nil {
 			return file, errors.Wrapf(create_err, "could not open or create %s", file_name)
 		}
+
 		log.Infof("Created file %s", file_name)
 		return file, nil
 	}
+
 	log.Infof("Today's entry already exists, opening %s", path.Join(FILE_DIR, file.Name()))
 	return file, nil
 }
@@ -55,8 +57,10 @@ func get_entry_name() (string, error) {
 	prefix := 0
 	found_today_entry := false
 	for _, entry := range entries {
+
 		entry_name := entry.Name()
 		if entry_name != "editor" {
+
 			entry_prefix, err := strconv.Atoi(strings.Split(entry_name, "_")[0])
 			if err != nil {
 				return "", errors.Wrapf(err, "error converting prefix %s to an integer", entry_prefix)
@@ -68,12 +72,13 @@ func get_entry_name() (string, error) {
 				found_today_entry = true
 				break
 			}
-			log.Infof("Prefix: %d", prefix)
 		}
 	}
+
 	if !found_today_entry {
 		prefix = len(entries) - 1
 	}
+
 	entry_name := fmt.Sprintf("%d_%s", prefix, entry_date)
 	return entry_name, nil
 }
