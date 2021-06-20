@@ -7,10 +7,15 @@ import (
 )
 
 func main() {
-	action, err := get_action()
-	if err != nil {
-		log.Fatal(errors.Wrapf(err, "error getting action action"))
-	}
 
-	run(action)
+	authenticate()
+
+	for {
+		action, err := get_action()
+		if err != nil {
+			log.Fatal(errors.Wrapf(err, "error getting action action"))
+		}
+
+		run(action)
+	}
 }

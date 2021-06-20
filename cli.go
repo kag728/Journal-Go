@@ -6,24 +6,25 @@ import (
 	"os"
 	"strings"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
 func get_action() (string, error) {
 
-	log.Info("Please enter r or w to read or write:\n")
+	log.Info("Please enter r to read, w to write, or x to exit:\n")
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		return "", fmt.Errorf("could not read line for r or w :: %s", err)
+		return "", errors.Wrapf(err, "could not read line for r or w :: %s", err)
 	}
 	input = strings.TrimSuffix(input, "\n")
 
-	if input == READ || input == WRITE {
+	if input == READ || input == WRITE || input == EXIT {
 		return input, nil
 	}
-	return "", fmt.Errorf("invalid action: %s, please choose r or w", input)
+	return "", errors.Wrapf(err, "invalid action: %s, please choose r or w or x", input)
 }
 
 func prompt_for_done() error {
@@ -33,7 +34,17 @@ func prompt_for_done() error {
 	reader := bufio.NewReader(os.Stdin)
 	_, err := reader.ReadString('\n')
 	if err != nil {
-		return fmt.Errorf("could not read new line input to signify Done :: %s", err)
+		return errors.Wrapf(err, "could not read new line input to signify Done")
 	}
 	return nil
+}
+
+func prompt_for_password() ([]byte, error) {
+
+	log.Info("Please enter password:")
+
+	var password string
+	fmt.Scanf("%s", &password)
+
+	return []byte(password), nil
 }

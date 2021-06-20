@@ -1,10 +1,6 @@
 package entry_utils
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -39,7 +35,7 @@ func CreateEditor(entry *os.File) (*os.File, error) {
 		return editor, errors.Wrapf(err, "error while reading contents of current entry %s", entry_file_name)
 	}
 
-	decrypted_entry_contents, err := decrypt_entry_content(string(entry_contents))
+	decrypted_entry_contents, err := DecryptEntryContents(string(entry_contents))
 	if err != nil {
 		return editor, errors.Wrapf(err, "error decrypting entry contents")
 	}
@@ -56,7 +52,7 @@ func SaveEditorText() error {
 	defer current_entry.Close()
 	defer editor.Close()
 
-	encrypted_contents, err := encrypt_editor_contents(string(editor_contents))
+	encrypted_contents, err := EncryptEditorContents(string(editor_contents))
 	if err != nil {
 		return errors.Wrapf(err, "error encrypting editor contents")
 	}
@@ -71,58 +67,4 @@ func delete_editor() error {
 		return errors.Wrapf(err, "error deleting editor file")
 	}
 	return nil
-}
-
-func encrypt_editor_contents(contents string) ([]byte, error) {
-	text := []byte(contents)
-	key := []byte("passphrasewhichneedstobe32bytes!")
-
-	// generate a new aes cipher using our 32 byte long key
-	c, err := aes.NewCipher(key)
-	// if there are any errors, handle them
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error while creating cipher")
-	}
-
-	gcm, err := cipher.NewGCM(c)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error while creating gcm")
-	}
-
-	nonce := make([]byte, gcm.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return []byte{}, errors.Wrapf(err, "error getting random numbers into nonce")
-	}
-
-	ret := gcm.Seal(nonce, nonce, text, nil)
-	return ret, nil
-}
-
-func decrypt_entry_content(contents string) ([]byte, error) {
-
-	contents_bytes := []byte(contents)
-	key := []byte("passphrasewhichneedstobe32bytes!")
-
-	c, err := aes.NewCipher(key)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error creating new cipher with key")
-	}
-
-	gcm, err := cipher.NewGCM(c)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error creating decryption gcm")
-	}
-
-	nonceSize := gcm.NonceSize()
-	if len(contents_bytes) < nonceSize {
-		return []byte{}, errors.Wrapf(err, "the length of the entry contents is less than nonce size")
-	}
-
-	nonce, ciphertext := contents_bytes[:nonceSize], contents_bytes[nonceSize:]
-	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error getting plain text")
-	}
-
-	return plaintext, nil
 }
