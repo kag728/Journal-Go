@@ -10,9 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const FILE_DIR string = "entries"
+const FILE_DIR string = "entries1"
 
-func Get_current_entry() (*os.File, error) {
+func GetCurrentEntry() (*os.File, error) {
 	_, dir_err := os.Stat(FILE_DIR)
 	if dir_err != nil {
 		mkdir_err := os.Mkdir(FILE_DIR, 7777)
@@ -34,11 +34,10 @@ func Get_current_entry() (*os.File, error) {
 			log.Errorf("Could not open or create %s :: %s", file_name, create_err)
 			return file, create_err
 		}
-		log.Infof("Created file %s", file_name)
+		log.Debugf("Created file %s", file_name)
 		return file, nil
 	}
-	log.Infof("today's entry already exists, opening")
-	log.Infof("file_name: %s, entry name: %s", file_name, file.Name())
+	log.Debugf("Today's entry already exists, opening %s", path.Join(FILE_DIR, file.Name()))
 	return file, nil
 }
 

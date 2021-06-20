@@ -5,25 +5,47 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-
-	log "github.com/sirupsen/logrus"
 )
 
 const (
 	EDITOR_FILE_NAME = "editor"
 )
 
-func Create_editor(current_entry *os.File) (*os.File, error) {
+var (
+	editor_file_name, entry_file_name string
+	current_entry                     *os.File
+	editor                            *os.File
+)
 
-	file, err := os.Create(path.Join(FILE_DIR, EDITOR_FILE_NAME))
+func CreateEditor(entry *os.File) (*os.File, error) {
+
+	current_entry = entry
+	editor_file_name = path.Join(FILE_DIR, EDITOR_FILE_NAME)
+	entry_file_name = path.Join(FILE_DIR, current_entry.Name())
+
+	var err error
+	editor, err = os.Create(editor_file_name)
 	if err != nil {
-		return file, fmt.Errorf("could not create editor file :: %s", err)
+		return editor, fmt.Errorf("could not create editor file :: %s", err)
 	}
-	entry_contents, err := ioutil.ReadFile(path.Join(FILE_DIR, current_entry.Name()))
+
+	entry_contents, err := ioutil.ReadFile(entry_file_name)
 	if err != nil {
-		return file, fmt.Errorf("error while reading contents of current entry %s :: %s", current_entry.Name(), err)
+		return editor, fmt.Errorf("error while reading contents of current entry %s :: %s", current_entry.Name(), err)
 	}
-	log.Infof("Contents of editor: %s", string(entry_contents))
-	ioutil.WriteFile(path.Join(FILE_DIR, EDITOR_FILE_NAME), entry_contents, 7777)
-	return file, nil
+
+	ioutil.WriteFile(editor_file_name, entry_contents, 7777)
+	return editor, nil
+}
+
+func SaveEditorText() error {
+	editor_contents, err := ioutil.ReadFile(editor_file_name)
+	if err != nil {
+		return fmt.Errorf("could not read editor contents :: %s", err)
+	}
+	defer current_entry.Close()
+	defer editor.Close()
+
+	ioutil.WriteFile(entry_file_name, editor_contents, 7777)
+	return nil
 }
