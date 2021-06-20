@@ -1,13 +1,15 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	"log"
+
+	"github.com/pkg/errors"
 )
 
 func main() {
 	action, err := get_action()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(errors.Wrapf(err, "error getting action action"))
 	}
 
 	run(action)
