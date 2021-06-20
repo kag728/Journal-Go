@@ -2,12 +2,13 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
+	"syscall"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/term"
 )
 
 func get_action() (string, error) {
@@ -43,8 +44,14 @@ func prompt_for_password() ([]byte, error) {
 
 	log.Info("Please enter password:")
 
-	var password string
-	fmt.Scanf("%s", &password)
+	return read_password()
+}
 
-	return []byte(password), nil
+func read_password() ([]byte, error) {
+	byte_password, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return []byte{}, errors.Wrapf(err, "error reading password from input")
+	}
+
+	return byte_password, nil
 }
