@@ -76,7 +76,7 @@ func get_entry_name() (string, error) {
 	}
 
 	if !found_today_entry {
-		prefix = len(entries) - 1
+		prefix = len(entries)
 	}
 
 	entry_name := fmt.Sprintf("%d_%s", prefix, entry_date)
