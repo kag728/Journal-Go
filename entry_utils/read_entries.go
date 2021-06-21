@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // Test the supplied password on the first file in the entries folder
@@ -76,7 +75,6 @@ func ReadEntries() error {
 func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 
 	filtered_entries := []fs.DirEntry{}
-	log.Infof("Original list: %v", entries)
 	for _, entry := range entries {
 
 		entry_name_split := strings.Split(entry.Name(), "_")
@@ -96,6 +94,6 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 			filtered_entries = append(filtered_entries, entry)
 		}
 	}
-	log.Infof("Filtered list: %v", filtered_entries)
+
 	return filtered_entries
 }
