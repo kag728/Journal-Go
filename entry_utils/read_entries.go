@@ -9,13 +9,17 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // Test the supplied password on the first file in the entries folder
 func TestPassword() (bool, error) {
+
+	// If the entries folder doesn't exist, user can go ahead and create one
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
-		return false, errors.Wrapf(err, "could not open directory %s", FILE_DIR)
+		log.Warn("Entries folder does not exist, create a new entry so set password.")
+		return true, nil
 	}
 	entries = filter_entries(entries)
 
@@ -47,7 +51,8 @@ func ReadEntries() error {
 
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
-		return errors.Wrapf(err, "could not open directory %s", FILE_DIR)
+		log.Warn("The entries directory does not exist, please create an entry first.")
+		return nil
 	}
 	entries = filter_entries(entries)
 

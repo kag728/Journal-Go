@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// File containing your passphrase
 const PASSPHRASE_FILE = ".internal/.passphrase"
 
 func authenticate() {

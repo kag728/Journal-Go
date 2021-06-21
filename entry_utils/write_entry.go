@@ -12,12 +12,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// The directory containing the entries
 const FILE_DIR string = "entries"
 
+// Either opens today's entry if it's already been made, or creates a new one and returns that.
+// The file is named based on the current date
 func GetCurrentEntry() (*os.File, error) {
 	_, dir_err := os.Stat(FILE_DIR)
 	if dir_err != nil {
-		mkdir_err := os.Mkdir(FILE_DIR, 7777)
+		mkdir_err := os.Mkdir(FILE_DIR, 0777)
 		if mkdir_err != nil {
 			return &os.File{}, errors.Wrapf(mkdir_err, "could not create dir %s", FILE_DIR)
 		}

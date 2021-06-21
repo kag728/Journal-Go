@@ -18,6 +18,8 @@ var (
 	editor                            *os.File
 )
 
+// Creates a file called "editor" in the entries/ directory.
+// This is where the entry can be edited in plain text.
 func CreateEditor(entry *os.File) (*os.File, error) {
 
 	current_entry = entry
@@ -44,6 +46,7 @@ func CreateEditor(entry *os.File) (*os.File, error) {
 	return editor, nil
 }
 
+// Encrypts the contents of the editor file and saves it to today's entry. Then deletes the editor.
 func SaveEditorText() error {
 	editor_contents, err := ioutil.ReadFile(editor_file_name)
 	if err != nil {
