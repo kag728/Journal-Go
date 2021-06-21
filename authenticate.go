@@ -16,7 +16,7 @@ func authenticate() {
 	var password []byte
 	password, err := os.ReadFile(PASSPHRASE_FILE)
 	if err != nil {
-		log.Warn("Could not find passphrase file at .internal/.passphrase")
+		log.Warn("Could not find passphrase file at %s", PASSPHRASE_FILE)
 		var prompt_err error
 		password, prompt_err = prompt_for_password()
 		if prompt_err != nil {
