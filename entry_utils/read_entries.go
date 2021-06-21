@@ -18,7 +18,7 @@ func TestPassword() (bool, error) {
 	// If the entries folder doesn't exist, user can go ahead and create one
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
-		log.Warn("Entries folder does not exist, create a new entry so set password.")
+		log.Warn("Entries folder does not exist, create a new entry to set password.")
 		return true, nil
 	}
 	entries = filter_entries(entries)
