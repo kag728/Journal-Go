@@ -46,7 +46,12 @@ func CreateEditor(entry *os.File) (Editor, error) {
 	}
 	editor.decrypted_entry_contents = decrypted_entry_contents
 
-	editor_starting_text := fmt.Sprintf("%s\n[%s] ", decrypted_entry_contents, time.Now().Format(time.Kitchen))
+	// Only append a new line if there is already text in the file, if not we start on first line.
+	var new_line string
+	if string(decrypted_entry_contents) != "" {
+		new_line = "\n"
+	}
+	editor_starting_text := fmt.Sprintf("%s%s[%s] ", decrypted_entry_contents, new_line, time.Now().Format(time.Kitchen))
 	ioutil.WriteFile(editor.editor_file_name, []byte(editor_starting_text), 7777)
 
 	return editor, nil
