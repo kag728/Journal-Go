@@ -17,8 +17,7 @@ const (
 type Editor struct {
 	editor_file_name, entry_file_name string
 	decrypted_entry_contents          []byte
-	current_entry                     *os.File
-	editor_file                       *os.File
+	current_entry, editor_file        *os.File
 }
 
 // Creates a file called "editor" in the entries/ directory.

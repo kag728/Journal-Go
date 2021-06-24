@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
+	"os/exec"
 	"strings"
 	"syscall"
 
@@ -54,4 +55,10 @@ func read_password() ([]byte, error) {
 	}
 
 	return byte_password, nil
+}
+
+func ClearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }

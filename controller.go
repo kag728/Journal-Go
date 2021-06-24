@@ -47,6 +47,7 @@ func run(action string) {
 		}
 
 	} else if action == EXIT {
+		ClearScreen()
 		os.Exit(0)
 	} else {
 		log.Warn("Could not interpret input")
