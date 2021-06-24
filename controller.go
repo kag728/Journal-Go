@@ -22,7 +22,7 @@ func run(action string) {
 			log.Fatal(errors.Wrap(err, "error getting current entry"))
 		}
 
-		_, err = entry_utils.CreateEditor(entry)
+		editor, err := entry_utils.CreateEditor(entry)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error creating editor"))
 		}
@@ -32,7 +32,7 @@ func run(action string) {
 			log.Fatal(errors.Wrap(err, "error prompting for done"))
 		}
 
-		err = entry_utils.SaveEditorText()
+		err = editor.SaveEditorText()
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error saving editor text"))
 		}
