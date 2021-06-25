@@ -15,20 +15,21 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 
 		entry_name_split := strings.Split(entry.Name(), "_")
 
-		add_to_list := true
+		if (len(entry_name_split)) != 4 {
+			continue
+		}
+
 		_, err := strconv.Atoi(entry_name_split[0])
 		if err != nil {
-			add_to_list = false
+			continue
 		}
 
 		_, err = strconv.Atoi(entry_name_split[len(entry_name_split)-1])
 		if err != nil {
-			add_to_list = false
+			continue
 		}
 
-		if add_to_list {
-			filtered_entries = append(filtered_entries, entry)
-		}
+		filtered_entries = append(filtered_entries, entry)
 	}
 
 	return filtered_entries

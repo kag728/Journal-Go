@@ -21,12 +21,12 @@ func get_action() (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "could not read line for r or w :: %s", err)
 	}
-	input = strings.TrimSuffix(input, "\n")
+	input = strings.ToLower(strings.TrimSuffix(input, "\n"))
 
 	if input == READ || input == WRITE || input == EXIT {
 		return input, nil
 	}
-	return "", errors.Wrapf(err, "invalid action: %s, please choose r or w or x", input)
+	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s", input, READ, WRITE, EXIT)
 }
 
 func prompt_for_done() error {
@@ -44,7 +44,6 @@ func prompt_for_done() error {
 func prompt_for_password() ([]byte, error) {
 
 	log.Info("Please enter password:")
-
 	return read_password()
 }
 
