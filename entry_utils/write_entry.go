@@ -53,6 +53,7 @@ func get_entry_name() (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "could not open directory %s", FILE_DIR)
 	}
+	entries = filter_entries(entries)
 
 	time := time.Now()
 	entry_date := fmt.Sprintf("%s_%d_%d", time.Month(), time.Day(), time.Year())
