@@ -9,14 +9,16 @@ import (
 )
 
 // File containing your passphrase
-const PASSPHRASE_FILE = ".internal/.passphrase"
+const (
+	passphrase_file_name = ".internal/.passphrase"
+	passphrase_length    = 32
+)
 
 func authenticate() {
 
-	var password []byte
-	password, err := os.ReadFile(PASSPHRASE_FILE)
+	password, err := os.ReadFile(passphrase_file_name)
 	if err != nil {
-		log.Warn("Could not find passphrase file at %s", PASSPHRASE_FILE)
+		log.Warn("Could not find passphrase file at %s", passphrase_file_name)
 		var prompt_err error
 		password, prompt_err = prompt_for_password()
 		if prompt_err != nil {
@@ -25,12 +27,12 @@ func authenticate() {
 	} else {
 
 		// If the full password is present
-		if len(password) == 32 {
+		if len(password) == passphrase_length {
 			log.Info("obtained password from file.")
 
 			// If not, user needs to give the remaining bytes
 		} else {
-			remaining_bytes := 32 - len(password)
+			remaining_bytes := passphrase_length - len(password)
 			log.Infof("Please enter %d remaining bytes:", remaining_bytes)
 
 			pin, err := read_password()

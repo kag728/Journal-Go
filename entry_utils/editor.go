@@ -51,7 +51,7 @@ func CreateEditor(entry *os.File) (Editor, error) {
 	if string(decrypted_entry_contents) != "" {
 		new_line = "\n"
 	}
-	editor_starting_text := fmt.Sprintf("%s%s[%s] ", decrypted_entry_contents, new_line, time.Now().Format(time.Kitchen))
+	editor_starting_text := fmt.Sprintf("%s%s- [%s] ", decrypted_entry_contents, new_line, time.Now().Format(time.Kitchen))
 	ioutil.WriteFile(editor.editor_file_name, []byte(editor_starting_text), 7777)
 
 	return editor, nil

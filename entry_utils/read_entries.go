@@ -27,7 +27,6 @@ func TestPassword() (bool, error) {
 	}
 
 	entry := entries[0]
-
 	entry_name := entry.Name()
 	entry_contents, err := os.ReadFile(path.Join(FILE_DIR, entry_name))
 	if err != nil {
