@@ -67,7 +67,7 @@ func get_entry_name() (string, error) {
 
 			entry_prefix, err := strconv.Atoi(strings.Split(entry_name, "_")[0])
 			if err != nil {
-				return "", errors.Wrapf(err, "error converting prefix %s to an integer", entry_prefix)
+				return "", errors.Wrapf(err, "error converting prefix %d to an integer", entry_prefix)
 			}
 			prefix = entry_prefix
 			entry_name = strings.Join(strings.Split(entry_name, "_")[1:], "_")
@@ -83,6 +83,11 @@ func get_entry_name() (string, error) {
 		prefix = len(entries)
 	}
 
-	entry_name := fmt.Sprintf("%d_%s", prefix, entry_date)
+	formatted_prefix, err := fill_prefix(prefix)
+	if err != nil {
+		return "", errors.Wrapf(err, "error formatting prefix")
+	}
+	entry_name := fmt.Sprintf("%s_%s", formatted_prefix, entry_date)
+
 	return entry_name, nil
 }
