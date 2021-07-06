@@ -1,7 +1,7 @@
-package main
+package pkg
 
 import (
-	"journal/entry_utils"
+	"journal/pkg/entry_utils"
 	"os"
 
 	"github.com/pkg/errors"
@@ -14,7 +14,7 @@ const (
 	EXIT  = "x"
 )
 
-func run(action string) {
+func Run(action string) {
 
 	if action == WRITE {
 		entry, err := entry_utils.GetCurrentEntry()

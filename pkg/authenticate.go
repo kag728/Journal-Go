@@ -1,7 +1,7 @@
-package main
+package pkg
 
 import (
-	"journal/entry_utils"
+	"journal/pkg/entry_utils"
 	"os"
 
 	"github.com/pkg/errors"
@@ -14,7 +14,7 @@ const (
 	passphrase_length    = 32
 )
 
-func authenticate() {
+func Authenticate() {
 
 	password, err := os.ReadFile(passphrase_file_name)
 	if err != nil {
