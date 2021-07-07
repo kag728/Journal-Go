@@ -10,7 +10,7 @@ This passphrase will be used for all the files in the `/entries` directory, so w
 
 Steps
   1. Download and extract release archive.
-  2. Run with `go run .`
+  2. Run with `go run cmd/journal/main.go`
   3. Choose a passphrase.
       * Either type in a 32-character passphrase when prompted.
       * Or store a 32-character long passphrase in the project directory in a file called `.internal/.passphrase`.
