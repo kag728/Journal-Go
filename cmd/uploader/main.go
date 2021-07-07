@@ -34,7 +34,7 @@ func get_cloud_dir() (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "error reading contents of cloud config file")
 	}
-	return string(cloud_dir), nil
+	return strings.TrimSuffix(string(cloud_dir), "\n"), nil
 }
 
 func upload(cloud_dir string) (string, error) {
