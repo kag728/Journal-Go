@@ -20,7 +20,7 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 
 		entry_name_split := strings.Split(entry.Name(), "_")
 
-		if (len(entry_name_split)) != 4 {
+		if (len(entry_name_split)) != max_prefix_length {
 			continue
 		}
 
