@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"journal/pkg/entry_utils"
+	"journal/pkg/journal/entry_utils"
 	"os"
 
 	"github.com/pkg/errors"

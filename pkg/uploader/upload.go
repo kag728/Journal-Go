@@ -2,7 +2,7 @@ package uploader
 
 import (
 	"io/ioutil"
-	"journal/pkg/entry_utils"
+	"journal/pkg/journal/entry_utils"
 	"os"
 	"path"
 	"strings"

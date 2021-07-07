@@ -1,7 +1,7 @@
 package main
 
 import (
-	"journal/pkg"
+	pkg "journal/pkg/journal"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
