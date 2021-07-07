@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"journal/pkg/journal/entry_utils"
+	"journal/pkg/uploader"
 	"os"
 
 	"github.com/pkg/errors"
@@ -38,6 +39,13 @@ func Run(action string) {
 		}
 
 		log.Infof("Saved contents of editor to entry.")
+
+		log.Info("Uploading changes to cloud directory...")
+		upload_name, err := uploader.Upload()
+		if err != nil {
+			log.Fatal(errors.Wrapf(err, "error uploading changes"))
+		}
+		log.Info("Successfully uploaded %s", upload_name)
 
 	} else if action == READ {
 
