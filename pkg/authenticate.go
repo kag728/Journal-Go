@@ -1,7 +1,7 @@
-package main
+package pkg
 
 import (
-	"journal/entry_utils"
+	"journal/pkg/entry_utils"
 	"os"
 
 	"github.com/pkg/errors"
@@ -14,11 +14,11 @@ const (
 	passphrase_length    = 32
 )
 
-func authenticate() {
+func Authenticate() {
 
 	password, err := os.ReadFile(passphrase_file_name)
 	if err != nil {
-		log.Warn("Could not find passphrase file at %s", passphrase_file_name)
+		log.Warnf("Could not find passphrase file at %s", passphrase_file_name)
 		var prompt_err error
 		password, prompt_err = prompt_for_password()
 		if prompt_err != nil {

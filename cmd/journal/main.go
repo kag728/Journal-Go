@@ -1,20 +1,22 @@
 package main
 
 import (
+	"journal/pkg"
+
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 
-	authenticate()
+	pkg.Authenticate()
 
 	for {
-		action, err := get_action()
+		action, err := pkg.GetAction()
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error getting action"))
 		}
 
-		run(action)
+		pkg.Run(action)
 	}
 }

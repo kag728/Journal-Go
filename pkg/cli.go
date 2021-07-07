@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"bufio"
@@ -12,7 +12,7 @@ import (
 	"golang.org/x/term"
 )
 
-func get_action() (string, error) {
+func GetAction() (string, error) {
 
 	log.Info("Please enter r to read, w to write, or x to exit:\n")
 

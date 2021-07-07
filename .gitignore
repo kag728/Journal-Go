@@ -18,7 +18,6 @@
 entries/
 
 .internal/
-
-journal
+bin/
 
 .DS_Store
