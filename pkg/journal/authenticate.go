@@ -1,4 +1,4 @@
-package pkg
+package journal
 
 import (
 	"journal/pkg/journal/entry_utils"

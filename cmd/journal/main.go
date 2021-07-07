@@ -1,7 +1,7 @@
 package main
 
 import (
-	pkg "journal/pkg/journal"
+	"journal/pkg/journal"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -9,14 +9,14 @@ import (
 
 func main() {
 
-	pkg.Authenticate()
+	journal.Authenticate()
 
 	for {
-		action, err := pkg.GetAction()
+		action, err := journal.GetAction()
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error getting action"))
 		}
 
-		pkg.Run(action)
+		journal.Run(action)
 	}
 }
