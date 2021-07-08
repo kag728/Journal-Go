@@ -28,6 +28,11 @@ func Run(action string) {
 			log.Fatal(errors.Wrap(err, "error creating editor"))
 		}
 
+		err = open_editor_in_vim()
+		if err != nil {
+			log.Fatal(errors.Wrapf(err, "error opening vim editor"))
+		}
+
 		err = prompt_for_done()
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error prompting for done"))

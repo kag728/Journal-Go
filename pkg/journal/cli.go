@@ -61,3 +61,15 @@ func ClearScreen() {
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
+
+func open_editor_in_vim() error {
+	cmd := exec.Command("vim", "entries/editor")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+	if err != nil {
+		return errors.Wrapf(err, "error opening editor in vim. Please make sure vim is installed and on the Path.")
+	}
+	return nil
+}

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -66,6 +67,7 @@ func (editor *Editor) SaveEditorText() error {
 	defer editor.current_entry.Close()
 	defer editor.editor_file.Close()
 
+	editor_contents = trim_newlines(editor_contents)
 	encrypted_contents, err := EncryptEditorContents(string(editor_contents))
 	if err != nil {
 		return errors.Wrapf(err, "error encrypting editor contents")
@@ -81,4 +83,13 @@ func (editor *Editor) delete() error {
 		return errors.Wrapf(err, "error deleting editor file")
 	}
 	return nil
+}
+
+func trim_newlines(editor_contents []byte) []byte {
+	s_untrimmed := string(editor_contents)
+	s_trimmed := strings.TrimSuffix(s_untrimmed, "\n")
+	if s_trimmed != s_untrimmed {
+		return trim_newlines([]byte(s_trimmed))
+	}
+	return []byte(s_trimmed)
 }
