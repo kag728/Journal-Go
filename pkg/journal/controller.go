@@ -43,14 +43,22 @@ func Run(action string) {
 			log.Fatal(errors.Wrap(err, "error saving editor text"))
 		}
 
-		log.Infof("Saved contents of editor to entry.")
+		log.Info("Encrypted contents of editor and saved them to entry.")
 
 		log.Info("Uploading changes to cloud directory...")
+
 		upload_name, err := uploader.Upload()
 		if err != nil {
-			log.Fatal(errors.Wrapf(err, "error uploading changes"))
+
+			if _, ok := err.(*uploader.CloudConfigNotFound); ok {
+				log.Warn("Skipping cloud upload, could not find cloudconfig file.")
+			} else {
+				log.Error(errors.Wrapf(err, "Entry was not uploaded to cloud folder. Please make sure folder name is correct"))
+			}
+
+		} else {
+			log.Infof("Successfully uploaded %s", upload_name)
 		}
-		log.Info("Successfully uploaded %s", upload_name)
 
 	} else if action == READ {
 

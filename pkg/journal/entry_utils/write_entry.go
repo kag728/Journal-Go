@@ -43,7 +43,6 @@ func GetCurrentEntry() (*os.File, error) {
 		return file, nil
 	}
 
-	log.Infof("Today's entry already exists, opening %s", file.Name())
 	return file, nil
 }
 

@@ -28,7 +28,7 @@ func Authenticate() {
 
 		// If the full password is present
 		if len(password) == passphrase_length {
-			log.Info("obtained password from file.")
+			log.Info("Obtained password from file.")
 
 			// If not, user needs to give the remaining bytes
 		} else {

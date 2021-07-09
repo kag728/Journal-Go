@@ -1,6 +1,7 @@
 package uploader
 
 import (
+	"fmt"
 	"io/ioutil"
 	"journal/pkg/journal/entry_utils"
 	"os"
@@ -12,12 +13,20 @@ import (
 
 const cloud_config = ".internal/cloudconfig"
 
+type CloudConfigNotFound struct {
+	filename, err string
+}
+
+func (f *CloudConfigNotFound) Error() string {
+	return fmt.Sprintf("Could not open file: %s due to error: %s", f.filename, f.err)
+}
+
 // Uploads today's entry to the folder specified in the cloud_config file.
 func Upload() (string, error) {
 
 	cloud_dir, err := get_cloud_dir()
 	if err != nil {
-		return "", errors.Wrapf(err, "error getting cloud directory")
+		return "", &CloudConfigNotFound{filename: cloud_config}
 	}
 
 	entry, err := entry_utils.GetCurrentEntry()
@@ -51,7 +60,7 @@ func Upload() (string, error) {
 func get_cloud_dir() (string, error) {
 	cloud_dir, err := os.ReadFile(cloud_config)
 	if err != nil {
-		return "", errors.Wrapf(err, "error reading contents of cloud config file")
+		return "", err
 	}
 	return strings.TrimSuffix(string(cloud_dir), "\n"), nil
 }
