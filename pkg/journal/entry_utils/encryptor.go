@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Struct for encrypting and decrypting strings of text using a provided key
 type Encryptor struct {
 	key []byte
 }
