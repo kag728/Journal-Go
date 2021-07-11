@@ -12,6 +12,12 @@ import (
 	"golang.org/x/term"
 )
 
+const (
+	clear        string = "clear"
+	vim          string = "vim"
+	vim_location string = "entries/editor"
+)
+
 func GetAction() (string, error) {
 
 	log.Info("Please enter r to read, w to write, or x to exit:\n")
@@ -57,13 +63,13 @@ func read_password() ([]byte, error) {
 }
 
 func ClearScreen() {
-	cmd := exec.Command("clear")
+	cmd := exec.Command(clear)
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
 
 func open_editor_in_vim() error {
-	cmd := exec.Command("vim", "entries/editor")
+	cmd := exec.Command(vim, vim_location)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
