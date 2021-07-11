@@ -23,7 +23,7 @@ type Editor struct {
 
 // Creates a file called "editor" in the entries/ directory.
 // This is where the entry can be edited in plain text.
-func CreateEditor(entry *os.File) (Editor, error) {
+func CreateEditor(entry *os.File, encryptor *Encryptor) (Editor, error) {
 
 	editor := Editor{}
 	editor.current_entry = entry
@@ -41,7 +41,7 @@ func CreateEditor(entry *os.File) (Editor, error) {
 		return editor, errors.Wrapf(err, "error while reading contents of current entry %s", editor.entry_file_name)
 	}
 
-	decrypted_entry_contents, err := DecryptEntryContents(string(entry_contents))
+	decrypted_entry_contents, err := encryptor.DecryptEntryContents(string(entry_contents))
 	if err != nil {
 		return editor, errors.Wrapf(err, "error decrypting entry contents")
 	}
@@ -59,7 +59,7 @@ func CreateEditor(entry *os.File) (Editor, error) {
 }
 
 // Encrypts the contents of the editor file and saves it to today's entry. Then deletes the editor.
-func (editor *Editor) SaveEditorText() error {
+func (editor *Editor) SaveEditorText(encryptor *Encryptor) error {
 	editor_contents, err := ioutil.ReadFile(editor.editor_file_name)
 	if err != nil {
 		return errors.Wrapf(err, "could not read editor contents")
@@ -68,7 +68,7 @@ func (editor *Editor) SaveEditorText() error {
 	defer editor.editor_file.Close()
 
 	editor_contents = trim_newlines(editor_contents)
-	encrypted_contents, err := EncryptEditorContents(string(editor_contents))
+	encrypted_contents, err := encryptor.EncryptEditorContents(string(editor_contents))
 	if err != nil {
 		return errors.Wrapf(err, "error encrypting editor contents")
 	}

@@ -14,7 +14,7 @@ const (
 	passphrase_length    = 32
 )
 
-func Authenticate() {
+func Authenticate(encryptor *entry_utils.Encryptor) {
 
 	password, err := os.ReadFile(passphrase_file_name)
 	if err != nil {
@@ -46,9 +46,9 @@ func Authenticate() {
 		}
 	}
 
-	entry_utils.SetPassword(password)
+	encryptor.SetPassword(password)
 
-	authenticated, err := entry_utils.TestPassword()
+	authenticated, err := entry_utils.TestPassword(encryptor)
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "error authenticating"))
 	}

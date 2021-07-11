@@ -9,13 +9,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-var key []byte
+type Encryptor struct {
+	key []byte
+}
 
 // Encrypts the contents currently saved in the editor file and returns them
-func EncryptEditorContents(contents string) ([]byte, error) {
+func (e *Encryptor) EncryptEditorContents(contents string) ([]byte, error) {
 	text := []byte(contents)
 
-	c, err := aes.NewCipher(key)
+	c, err := aes.NewCipher(e.key)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "error while creating cipher")
 	}
@@ -35,10 +37,10 @@ func EncryptEditorContents(contents string) ([]byte, error) {
 }
 
 // Decrypts and returns the contents of today's entry
-func DecryptEntryContents(contents string) ([]byte, error) {
+func (e *Encryptor) DecryptEntryContents(contents string) ([]byte, error) {
 	contents_bytes := []byte(contents)
 
-	c, err := aes.NewCipher(key)
+	c, err := aes.NewCipher(e.key)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "error creating new cipher with key")
 	}
@@ -62,6 +64,6 @@ func DecryptEntryContents(contents string) ([]byte, error) {
 	return plaintext, nil
 }
 
-func SetPassword(p []byte) {
-	key = p
+func (e *Encryptor) SetPassword(p []byte) {
+	e.key = p
 }

@@ -15,7 +15,7 @@ const (
 	EXIT  = "x"
 )
 
-func Run(action string) {
+func Run(action string, encryptor *entry_utils.Encryptor) {
 
 	if action == WRITE {
 		entry, err := entry_utils.GetCurrentEntry()
@@ -23,7 +23,7 @@ func Run(action string) {
 			log.Fatal(errors.Wrap(err, "error getting current entry"))
 		}
 
-		editor, err := entry_utils.CreateEditor(entry)
+		editor, err := entry_utils.CreateEditor(entry, encryptor)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error creating editor"))
 		}
@@ -38,7 +38,7 @@ func Run(action string) {
 			log.Fatal(errors.Wrap(err, "error prompting for done"))
 		}
 
-		err = editor.SaveEditorText()
+		err = editor.SaveEditorText(encryptor)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error saving editor text"))
 		}
@@ -62,7 +62,7 @@ func Run(action string) {
 
 	} else if action == READ {
 
-		err := entry_utils.ReadEntries()
+		err := entry_utils.ReadEntries(encryptor)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}

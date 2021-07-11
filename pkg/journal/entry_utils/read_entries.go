@@ -11,7 +11,7 @@ import (
 )
 
 // Test the supplied password on the first file in the entries folder
-func TestPassword() (bool, error) {
+func TestPassword(encryptor *Encryptor) (bool, error) {
 
 	// If the entries folder doesn't exist, user can go ahead and create one
 	entries, err := os.ReadDir(FILE_DIR)
@@ -34,7 +34,7 @@ func TestPassword() (bool, error) {
 	}
 
 	// Check if we can decrypt with the password
-	_, err = DecryptEntryContents(string(entry_contents))
+	_, err = encryptor.DecryptEntryContents(string(entry_contents))
 	if err != nil {
 		return false, errors.Wrapf(err, "error decrypting with the password")
 	}
@@ -44,7 +44,7 @@ func TestPassword() (bool, error) {
 }
 
 // Print out all entries
-func ReadEntries() error {
+func ReadEntries(encryptor *Encryptor) error {
 
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
@@ -62,7 +62,7 @@ func ReadEntries() error {
 			return errors.Wrapf(err, "error reading entry %s", entry_name)
 		}
 
-		decrypted_entry_contents, err := DecryptEntryContents(string(entry_contents))
+		decrypted_entry_contents, err := encryptor.DecryptEntryContents(string(entry_contents))
 		if err != nil {
 			return errors.Wrapf(err, "error decrypting entry contents for %s", entry_name)
 		}
