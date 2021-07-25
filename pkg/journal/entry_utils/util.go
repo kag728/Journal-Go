@@ -11,6 +11,9 @@ import (
 
 const max_prefix_length = 4
 
+const max_entry_name_sections = 5
+const min_entry_name_sections = 4
+
 // Filter list of entries so each on begins with a number and ends with a number.
 // Definitely not a great implementation but we'll see how it does
 func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
@@ -20,7 +23,7 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 
 		entry_name_split := strings.Split(entry.Name(), "_")
 
-		if (len(entry_name_split)) != max_prefix_length {
+		if (len(entry_name_split)) > max_entry_name_sections || (len(entry_name_split)) < min_entry_name_sections {
 			continue
 		}
 

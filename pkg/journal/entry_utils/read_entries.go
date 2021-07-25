@@ -56,7 +56,16 @@ func ReadEntries(encryptor *Encryptor) error {
 	fmt.Printf("\n")
 	for _, entry := range entries {
 		entry_name := entry.Name()
-		entry_name_formatted := strings.Replace(strings.Join(strings.Split(entry_name, "_")[1:], "_"), "_", " ", -1)
+
+		// Get every part of file name aside from prefix
+		entry_sections := strings.Split(entry_name, "_")[1:]
+
+		// If it starts with a weekday, add a comma
+		if len(entry_sections) == max_entry_name_sections-1 {
+			entry_sections[0] = fmt.Sprintf("%s,", entry_sections[0])
+		}
+
+		entry_name_formatted := strings.Join(entry_sections, " ")
 		entry_contents, err := os.ReadFile(path.Join(FILE_DIR, entry_name))
 		if err != nil {
 			return errors.Wrapf(err, "error reading entry %s", entry_name)

@@ -30,7 +30,7 @@ func Run(action string, encryptor *entry_utils.Encryptor) {
 
 		err = open_editor_in_vim()
 		if err != nil {
-			log.Warn("Could not open vim. Please open entries/editor with another text editor.")
+			log.Warnf("Could not open vim. Please open %s with another text editor.", vim_location)
 		}
 
 		err = prompt_for_done()

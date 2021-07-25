@@ -55,7 +55,7 @@ func get_entry_name() (string, error) {
 	entries = filter_entries(entries)
 
 	time := time.Now()
-	entry_date := fmt.Sprintf("%s_%d_%d", time.Month(), time.Day(), time.Year())
+	entry_date := fmt.Sprintf("%s_%s_%d_%d", time.Weekday(), time.Month(), time.Day(), time.Year())
 
 	prefix := 0
 	found_today_entry := false
