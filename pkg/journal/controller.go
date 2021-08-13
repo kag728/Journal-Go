@@ -10,14 +10,15 @@ import (
 )
 
 const (
-	WRITE = "w"
-	READ  = "r"
-	EXIT  = "x"
+	write    = "w"
+	read     = "r"
+	read_all = "ra"
+	exit     = "x"
 )
 
 func Run(action string, encryptor *entry_utils.Encryptor) {
 
-	if action == WRITE {
+	if action == write {
 		entry, err := entry_utils.GetCurrentEntry()
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error getting current entry"))
@@ -60,14 +61,21 @@ func Run(action string, encryptor *entry_utils.Encryptor) {
 			log.Infof("Successfully uploaded %s", upload_name)
 		}
 
-	} else if action == READ {
+	} else if action == read {
 
-		err := entry_utils.ReadEntries(encryptor)
+		err := entry_utils.ReadEntries(encryptor, true)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}
 
-	} else if action == EXIT {
+	} else if action == read_all {
+
+		err := entry_utils.ReadEntries(encryptor, false)
+		if err != nil {
+			log.Fatal(errors.Wrapf(err, "error reading entries"))
+		}
+
+	} else if action == exit {
 		ClearScreen()
 		os.Exit(0)
 	} else {

@@ -20,7 +20,7 @@ const (
 
 func GetAction() (string, error) {
 
-	log.Info("Please enter r to read, w to write, or x to exit:\n")
+	log.Info("Please enter r to read this week's, ra to read all, w to write, or x to exit:\n")
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
@@ -29,10 +29,10 @@ func GetAction() (string, error) {
 	}
 	input = strings.ToLower(strings.TrimSuffix(input, "\n"))
 
-	if input == READ || input == WRITE || input == EXIT {
+	if input == read || input == read_all || input == write || input == exit {
 		return input, nil
 	}
-	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s", input, READ, WRITE, EXIT)
+	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s or %s", input, read, read_all, write, exit)
 }
 
 func prompt_for_done() error {

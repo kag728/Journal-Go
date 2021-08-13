@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -41,6 +42,34 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 	}
 
 	return filtered_entries
+}
+
+func filter_entries_for_week(entries []fs.DirEntry) ([]fs.DirEntry, error) {
+
+	entries = filter_entries(entries)
+
+	now := time.Now()
+	today := now.Weekday()
+
+	days_back := get_days_back(fmt.Sprint(today))
+	hours_back := time.Duration(days_back * 24)
+
+	start_date := now.Add(-hours_back * time.Hour)
+
+	filtered_entries := []fs.DirEntry{}
+	for _, entry := range entries {
+
+		entry_date, err := get_entry_date(entry.Name())
+		if err != nil {
+			return nil, errors.Wrapf(err, "error getting the entry date for %s", entry.Name())
+		}
+
+		if start_date.Before(entry_date) {
+			filtered_entries = append(filtered_entries, entry)
+		}
+	}
+
+	return filtered_entries, nil
 }
 
 func get_prefix_digits(n int) int {

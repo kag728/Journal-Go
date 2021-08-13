@@ -44,14 +44,25 @@ func TestPassword(encryptor *Encryptor) (bool, error) {
 }
 
 // Print out all entries
-func ReadEntries(encryptor *Encryptor) error {
+func ReadEntries(encryptor *Encryptor, one_week bool) error {
 
 	entries, err := os.ReadDir(FILE_DIR)
 	if err != nil {
 		log.Warn("The entries directory does not exist, please create an entry first.")
 		return nil
 	}
-	entries = filter_entries(entries)
+
+	if one_week {
+		entries, err = filter_entries_for_week(entries)
+		if err != nil {
+			return errors.Wrapf(err, "error filtering entries for this week")
+		}
+	} else {
+		entries = filter_entries(entries)
+		if err != nil {
+			return errors.Wrapf(err, "error filtering entries for this week")
+		}
+	}
 
 	fmt.Printf("\n")
 	for _, entry := range entries {
