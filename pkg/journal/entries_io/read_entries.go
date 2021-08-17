@@ -12,39 +12,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Test the supplied password on the first file in the entries folder
-// func TestPassword(encryptor *authenticaiton.Encryptor) (bool, error) {
-
-// 	// If the entries folder doesn't exist, user can go ahead and create one
-// 	entries, err := os.ReadDir(FILE_DIR)
-// 	if err != nil {
-// 		log.Warn("Entries folder does not exist, create a new entry to set password.")
-// 		return true, nil
-// 	}
-// 	entries = filter_entries(entries)
-
-// 	// If there aren't any entries, any password is good
-// 	if len(entries) == 0 {
-// 		return true, nil
-// 	}
-
-// 	entry := entries[0]
-// 	entry_name := entry.Name()
-// 	entry_contents, err := os.ReadFile(path.Join(FILE_DIR, entry_name))
-// 	if err != nil {
-// 		return false, errors.Wrapf(err, "error reading entry %s", entry_name)
-// 	}
-
-// 	// Check if we can decrypt with the password
-// 	_, err = encryptor.DecryptEntryContents(string(entry_contents))
-// 	if err != nil {
-// 		return false, errors.Wrapf(err, "error decrypting with the password")
-// 	}
-
-// 	// Password worked
-// 	return true, nil
-// }
-
 // Print out all entries
 func ReadEntries(encryptor *authentication.Encryptor, one_week bool) error {
 
