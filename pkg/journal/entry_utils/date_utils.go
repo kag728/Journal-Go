@@ -14,7 +14,7 @@ func get_entry_date(filename string) (time.Time, error) {
 	split_date := strings.Split(filename, "_")
 	month_index := 1
 
-	if len(split_date) == max_entry_name_sections {
+	if len(split_date) == Max_entry_name_sections {
 		month_index = 2
 	}
 

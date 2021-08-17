@@ -1,8 +1,9 @@
-package entry_utils
+package authentication
 
 import (
 	"fmt"
 	"io/ioutil"
+	"journal/pkg/journal/entry_utils"
 	"os"
 	"path"
 	"strings"
@@ -27,7 +28,7 @@ func CreateEditor(entry *os.File, encryptor *Encryptor) (Editor, error) {
 
 	editor := Editor{}
 	editor.current_entry = entry
-	editor.editor_file_name = path.Join(FILE_DIR, EDITOR_FILE_NAME)
+	editor.editor_file_name = path.Join(entry_utils.FILE_DIR, EDITOR_FILE_NAME)
 	editor.entry_file_name = path.Join(editor.current_entry.Name())
 	var err error
 

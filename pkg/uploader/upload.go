@@ -3,7 +3,7 @@ package uploader
 import (
 	"fmt"
 	"io/ioutil"
-	"journal/pkg/journal/entry_utils"
+	"journal/pkg/journal/entries"
 	"os"
 	"path"
 	"strings"
@@ -29,7 +29,7 @@ func Upload() (string, error) {
 		return "", &CloudConfigNotFound{filename: cloud_config}
 	}
 
-	entry, err := entry_utils.GetCurrentEntry()
+	entry, err := entries.GetCurrentEntry()
 	if err != nil {
 		return "", errors.Wrapf(err, "error getting current entry")
 	}

@@ -1,7 +1,8 @@
 package journal
 
 import (
-	"journal/pkg/journal/entry_utils"
+	"journal/pkg/journal/authentication"
+	"journal/pkg/journal/entries"
 	"journal/pkg/uploader"
 	"os"
 
@@ -16,15 +17,15 @@ const (
 	exit     = "x"
 )
 
-func Run(action string, encryptor *entry_utils.Encryptor) {
+func Run(action string, encryptor *authentication.Encryptor) {
 
 	if action == write {
-		entry, err := entry_utils.GetCurrentEntry()
+		entry, err := entries.GetCurrentEntry()
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error getting current entry"))
 		}
 
-		editor, err := entry_utils.CreateEditor(entry, encryptor)
+		editor, err := authentication.CreateEditor(entry, encryptor)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error creating editor"))
 		}
@@ -63,14 +64,14 @@ func Run(action string, encryptor *entry_utils.Encryptor) {
 
 	} else if action == read {
 
-		err := entry_utils.ReadEntries(encryptor, true)
+		err := entries.ReadEntries(encryptor, true)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}
 
 	} else if action == read_all {
 
-		err := entry_utils.ReadEntries(encryptor, false)
+		err := entries.ReadEntries(encryptor, false)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}

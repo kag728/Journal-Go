@@ -5,11 +5,9 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"syscall"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/term"
 )
 
 const (
@@ -45,21 +43,6 @@ func prompt_for_done() error {
 		return errors.Wrapf(err, "could not read new line input to signify Done")
 	}
 	return nil
-}
-
-func prompt_for_password() ([]byte, error) {
-
-	log.Info("Please enter password:")
-	return read_password()
-}
-
-func read_password() ([]byte, error) {
-	byte_password, err := term.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "error reading password from input")
-	}
-
-	return byte_password, nil
 }
 
 func ClearScreen() {

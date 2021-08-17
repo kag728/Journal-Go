@@ -1,4 +1,4 @@
-package entry_utils
+package authentication
 
 import (
 	"reflect"

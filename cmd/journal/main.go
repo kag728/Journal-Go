@@ -2,7 +2,7 @@ package main
 
 import (
 	"journal/pkg/journal"
-	"journal/pkg/journal/entry_utils"
+	"journal/pkg/journal/authentication"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -10,9 +10,9 @@ import (
 
 func main() {
 
-	encryptor := &entry_utils.Encryptor{}
+	encryptor := &authentication.Encryptor{}
 
-	journal.Authenticate(encryptor)
+	authentication.Authenticate(encryptor)
 
 	for {
 		action, err := journal.GetAction()

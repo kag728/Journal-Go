@@ -10,21 +10,25 @@ import (
 	"github.com/pkg/errors"
 )
 
-const max_prefix_length = 4
+const (
+	Max_prefix_length       = 4
+	Max_entry_name_sections = 5
+	Min_entry_name_sections = 4
 
-const max_entry_name_sections = 5
-const min_entry_name_sections = 4
+	// The directory containing the entries
+	FILE_DIR string = "entries"
+)
 
 // Filter list of entries so each on begins with a number and ends with a number.
 // Definitely not a great implementation but we'll see how it does
-func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
+func Filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 
 	filtered_entries := []fs.DirEntry{}
 	for _, entry := range entries {
 
 		entry_name_split := strings.Split(entry.Name(), "_")
 
-		if (len(entry_name_split)) > max_entry_name_sections || (len(entry_name_split)) < min_entry_name_sections {
+		if (len(entry_name_split)) > Max_entry_name_sections || (len(entry_name_split)) < Min_entry_name_sections {
 			continue
 		}
 
@@ -44,9 +48,9 @@ func filter_entries(entries []fs.DirEntry) []fs.DirEntry {
 	return filtered_entries
 }
 
-func filter_entries_for_week(entries []fs.DirEntry) ([]fs.DirEntry, error) {
+func Filter_entries_for_week(entries []fs.DirEntry) ([]fs.DirEntry, error) {
 
-	entries = filter_entries(entries)
+	entries = Filter_entries(entries)
 
 	now := time.Now()
 	today := now.Weekday()
@@ -80,14 +84,14 @@ func get_prefix_digits(n int) int {
 	return digits
 }
 
-func fill_prefix(n int) (string, error) {
+func Fill_prefix(n int) (string, error) {
 	digits := get_prefix_digits(n)
-	if digits > max_prefix_length {
-		return "", errors.Wrapf(errors.New("Prefix error"), "Entry prefix too high. Max possible prefix: %d", max_prefix_length)
+	if digits > Max_prefix_length {
+		return "", errors.Wrapf(errors.New("Prefix error"), "Entry prefix too high. Max possible prefix: %d", Max_prefix_length)
 	}
 
 	output := ""
-	for i := 0; i < max_prefix_length-digits; i++ {
+	for i := 0; i < Max_prefix_length-digits; i++ {
 		output += "0"
 	}
 
