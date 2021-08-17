@@ -11,7 +11,11 @@ import (
 )
 
 const (
-	Max_prefix_length       = 4
+
+	// Number of digits before entry number (0000, 0001 is 4)
+	Max_prefix_length = 4
+
+	// Number of underscore-separated sections in an entry file name (4 when weekday is not included)
 	Max_entry_name_sections = 5
 	Min_entry_name_sections = 4
 
