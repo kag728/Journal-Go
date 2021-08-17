@@ -2,7 +2,7 @@ package journal
 
 import (
 	"journal/pkg/journal/authentication"
-	"journal/pkg/journal/entries"
+	"journal/pkg/journal/entries_io"
 	"journal/pkg/uploader"
 	"os"
 
@@ -20,7 +20,7 @@ const (
 func Run(action string, encryptor *authentication.Encryptor) {
 
 	if action == write {
-		entry, err := entries.GetCurrentEntry()
+		entry, err := entries_io.GetCurrentEntry()
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "error getting current entry"))
 		}
@@ -64,14 +64,14 @@ func Run(action string, encryptor *authentication.Encryptor) {
 
 	} else if action == read {
 
-		err := entries.ReadEntries(encryptor, true)
+		err := entries_io.ReadEntries(encryptor, true)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}
 
 	} else if action == read_all {
 
-		err := entries.ReadEntries(encryptor, false)
+		err := entries_io.ReadEntries(encryptor, false)
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "error reading entries"))
 		}
