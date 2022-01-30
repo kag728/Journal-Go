@@ -46,7 +46,7 @@ func handle_write(encryptor *authentication.Encryptor) {
 
 	err = open_editor_in_vim()
 	if err != nil {
-		log.Warnf("Could not open vim. Please open %s with another text editor.", vim_location)
+		log.Warnf("Could not open vim. Please open %s with another text editor.", editor_location)
 	}
 
 	err = prompt_for_done()

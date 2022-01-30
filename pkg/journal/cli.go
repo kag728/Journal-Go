@@ -11,10 +11,13 @@ import (
 )
 
 const (
-	clear        string = "clear"
-	vim          string = "vim"
-	vim_location string = "entries/editor"
+	clear             string = "clear"
+	vim               string = "vim"
+	editor_location   string = "entries/editor"
+	text_edit_command string = "open"
 )
+
+var text_edit_args []string = []string{"-a", "TextEdit", editor_location}
 
 func GetAction() (string, error) {
 
@@ -52,7 +55,7 @@ func ClearScreen() {
 }
 
 func open_editor_in_vim() error {
-	cmd := exec.Command(vim, vim_location)
+	cmd := exec.Command(text_edit_command, text_edit_args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 

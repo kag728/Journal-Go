@@ -52,7 +52,7 @@ func get_days_back(day string) int {
 	case "Saturday":
 		return 6
 	case "Sunday":
-		return 0
+		return 1
 	}
 
 	return 0

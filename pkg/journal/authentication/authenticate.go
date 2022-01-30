@@ -51,7 +51,7 @@ func Authenticate(encryptor *Encryptor) {
 
 	encryptor.SetPassword(password)
 
-	authenticated, err := TestPassword(encryptor)
+	authenticated, err := testPassword(encryptor)
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "error authenticating"))
 	}
@@ -76,7 +76,7 @@ func read_password() ([]byte, error) {
 	return byte_password, nil
 }
 
-func TestPassword(encryptor *Encryptor) (bool, error) {
+func testPassword(encryptor *Encryptor) (bool, error) {
 
 	// If the entries folder doesn't exist, user can go ahead and create one
 	entries, err := os.ReadDir(entry_utils.FILE_DIR)
