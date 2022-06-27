@@ -89,6 +89,11 @@ func get_prefix_digits(n int) int {
 }
 
 func Fill_prefix(n int) (string, error) {
+
+	if n == 0 {
+		return "0000", nil
+	}
+
 	digits := get_prefix_digits(n)
 	if digits > Max_prefix_length {
 		return "", errors.Wrapf(errors.New("Prefix error"), "Entry prefix too high. Max possible prefix: %d", Max_prefix_length)

@@ -12,7 +12,6 @@ import (
 
 const (
 	clear             string = "clear"
-	vim               string = "vim"
 	editor_location   string = "entries/editor"
 	text_edit_command string = "open"
 )
@@ -21,7 +20,8 @@ var text_edit_args []string = []string{"-a", "TextEdit", editor_location}
 
 func GetAction() (string, error) {
 
-	log.Info("Please enter r to read this week's, ra to read all, w to write, or x to exit:\n")
+	log.Info("Please enter \n\tr to read this week's entries \n\tra to read all" +
+		"\n\tw to write \n\tog to organize entries \n\tx to exit:\n")
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
@@ -30,7 +30,7 @@ func GetAction() (string, error) {
 	}
 	input = strings.ToLower(strings.TrimSuffix(input, "\n"))
 
-	if input == read || input == read_all || input == write || input == exit {
+	if input == read || input == read_all || input == write || input == organize || input == exit {
 		return input, nil
 	}
 	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s or %s", input, read, read_all, write, exit)

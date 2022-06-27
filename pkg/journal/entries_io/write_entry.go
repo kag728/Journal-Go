@@ -55,7 +55,7 @@ func get_entry_name() (string, error) {
 	time := time.Now()
 	entry_date := fmt.Sprintf("%s_%s_%d_%d", time.Weekday(), time.Month(), time.Day(), time.Year())
 
-	prefix := 0
+	max_prefix := 0
 	found_today_entry := false
 	for _, entry := range entries {
 
@@ -66,7 +66,9 @@ func get_entry_name() (string, error) {
 			if err != nil {
 				return "", errors.Wrapf(err, "error converting prefix %d to an integer", entry_prefix)
 			}
-			prefix = entry_prefix
+			if entry_prefix > max_prefix {
+				max_prefix = entry_prefix
+			}
 			entry_name = strings.Join(strings.Split(entry_name, "_")[1:], "_")
 
 			if entry_name == entry_date {
@@ -77,10 +79,10 @@ func get_entry_name() (string, error) {
 	}
 
 	if !found_today_entry {
-		prefix = len(entries)
+		max_prefix += 1
 	}
 
-	formatted_prefix, err := entry_utils.Fill_prefix(prefix)
+	formatted_prefix, err := entry_utils.Fill_prefix(max_prefix)
 	if err != nil {
 		return "", errors.Wrapf(err, "error formatting prefix")
 	}
