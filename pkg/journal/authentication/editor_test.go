@@ -37,7 +37,7 @@ func Test_trim_newlines(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := trim_newlines(tt.args.editor_contents); !reflect.DeepEqual(got, tt.want) {
+			if got := trimNewlines(tt.args.editor_contents); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("trim_newlines() = %v, want %v", got, tt.want)
 			}
 		})

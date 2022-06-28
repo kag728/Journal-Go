@@ -9,24 +9,24 @@ import (
 	"github.com/pkg/errors"
 )
 
-func get_entry_date(filename string) (time.Time, error) {
+func getEntryDate(filename string) (time.Time, error) {
 
-	split_date := strings.Split(filename, "_")
-	month_index := 1
+	splitDate := strings.Split(filename, "_")
+	monthIndex := 1
 
-	if len(split_date) == Max_entry_name_sections {
-		month_index = 2
+	if len(splitDate) == MaxEntryNameSections {
+		monthIndex = 2
 	}
 
-	month, err := get_month_from_string(split_date[month_index])
+	month, err := getMonthFromString(splitDate[monthIndex])
 	if err != nil {
 		return time.Time{}, errors.Wrapf(err, "error converting month to time.Month")
 	}
-	day, err := strconv.Atoi(split_date[month_index+1])
+	day, err := strconv.Atoi(splitDate[monthIndex+1])
 	if err != nil {
 		return time.Time{}, errors.Wrapf(err, "error converting day to int")
 	}
-	year, err := strconv.Atoi(split_date[month_index+2])
+	year, err := strconv.Atoi(splitDate[monthIndex+2])
 	if err != nil {
 		return time.Time{}, errors.Wrapf(err, "error converting year to int")
 	}
@@ -36,7 +36,7 @@ func get_entry_date(filename string) (time.Time, error) {
 	return date, nil
 }
 
-func get_days_back(day string) int {
+func getDaysBack(day string) int {
 
 	switch day {
 	case "Monday":
@@ -58,7 +58,7 @@ func get_days_back(day string) int {
 	return 0
 }
 
-func get_month_from_string(month string) (time.Month, error) {
+func getMonthFromString(month string) (time.Month, error) {
 	switch month {
 	case "January":
 		return time.January, nil

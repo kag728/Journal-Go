@@ -11,29 +11,29 @@ import (
 )
 
 const (
-	write    = "w"
-	read     = "r"
-	read_all = "ra"
-	exit     = "x"
+	write   = "w"
+	read    = "r"
+	readAll = "ra"
+	exit    = "x"
 )
 
 func Run(action string, encryptor *authentication.Encryptor) {
 
 	switch action {
 	case write:
-		handle_write(encryptor)
+		handleWrite(encryptor)
 	case read:
-		handle_read(encryptor)
-	case read_all:
-		handle_read_all(encryptor)
+		handleRead(encryptor)
+	case readAll:
+		handleReadAll(encryptor)
 	case exit:
-		handle_exit(encryptor)
+		handleExit()
 	default:
 		log.Warn("Could not interpret input")
 	}
 }
 
-func handle_write(encryptor *authentication.Encryptor) {
+func handleWrite(encryptor *authentication.Encryptor) {
 	entry, err := entries_io.GetCurrentEntry()
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "error getting current entry"))
@@ -44,12 +44,12 @@ func handle_write(encryptor *authentication.Encryptor) {
 		log.Fatal(errors.Wrap(err, "error creating editor"))
 	}
 
-	err = open_editor_in_vim()
+	err = openEditorInVim()
 	if err != nil {
-		log.Warnf("Could not open vim. Please open %s with another text editor.", editor_location)
+		log.Warnf("Could not open vim. Please open %s with another text editor.", editorLocation)
 	}
 
-	err = prompt_for_done()
+	err = promptForDone()
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "error prompting for done"))
 	}
@@ -63,7 +63,7 @@ func handle_write(encryptor *authentication.Encryptor) {
 
 	log.Info("Uploading changes to cloud directory...")
 
-	upload_name, err := uploader.Upload()
+	uploadName, err := uploader.Upload()
 	if err != nil {
 
 		if _, ok := err.(*uploader.CloudConfigNotFound); ok {
@@ -73,25 +73,25 @@ func handle_write(encryptor *authentication.Encryptor) {
 		}
 
 	} else {
-		log.Infof("Successfully uploaded %s", upload_name)
+		log.Infof("Successfully uploaded %s", uploadName)
 	}
 }
 
-func handle_read(encryptor *authentication.Encryptor) {
+func handleRead(encryptor *authentication.Encryptor) {
 	err := entries_io.ReadEntries(encryptor, true)
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "error reading entries"))
 	}
 }
 
-func handle_read_all(encryptor *authentication.Encryptor) {
+func handleReadAll(encryptor *authentication.Encryptor) {
 	err := entries_io.ReadEntries(encryptor, false)
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "error reading entries"))
 	}
 }
 
-func handle_exit(encryptor *authentication.Encryptor) {
+func handleExit() {
 	ClearScreen()
 	os.Exit(0)
 }

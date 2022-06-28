@@ -9,12 +9,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Struct for encrypting and decrypting strings of text using a provided key
+// Encryptor struct for encrypting and decrypting strings of text using a provided key
 type Encryptor struct {
 	key []byte
 }
 
-// Encrypts the contents currently saved in the editor file and returns them
+// EncryptEditorContents encrypts the contents currently saved in the editor file and returns them
 func (e *Encryptor) EncryptEditorContents(contents string) ([]byte, error) {
 	text := []byte(contents)
 
@@ -37,9 +37,9 @@ func (e *Encryptor) EncryptEditorContents(contents string) ([]byte, error) {
 	return ret, nil
 }
 
-// Decrypts and returns the contents of today's entry
+// DecryptEntryContents decrypts and returns the contents of today's entry
 func (e *Encryptor) DecryptEntryContents(contents string) ([]byte, error) {
-	contents_bytes := []byte(contents)
+	contentsBytes := []byte(contents)
 
 	c, err := aes.NewCipher(e.key)
 	if err != nil {
@@ -52,11 +52,11 @@ func (e *Encryptor) DecryptEntryContents(contents string) ([]byte, error) {
 	}
 
 	nonceSize := gcm.NonceSize()
-	if len(contents_bytes) < nonceSize {
+	if len(contentsBytes) < nonceSize {
 		return []byte{}, errors.Wrapf(err, "the length of the entry contents is less than nonce size")
 	}
 
-	nonce, ciphertext := contents_bytes[:nonceSize], contents_bytes[nonceSize:]
+	nonce, ciphertext := contentsBytes[:nonceSize], contentsBytes[nonceSize:]
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "error getting plain text")

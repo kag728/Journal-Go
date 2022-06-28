@@ -13,39 +13,39 @@ import (
 
 // File containing your passphrase
 const (
-	passphrase_file_name = ".internal/.passphrase"
-	passphrase_length    = 32
+	passphraseFileName = ".internal/.passphrase"
+	passphraseLength   = 32
 )
 
 func Authenticate(encryptor *Encryptor) {
 
-	password, err := os.ReadFile(passphrase_file_name)
+	password, err := os.ReadFile(passphraseFileName)
 	if err != nil {
-		log.Warnf("Could not find passphrase file at %s", passphrase_file_name)
-		var prompt_err error
-		password, prompt_err = prompt_for_password()
-		if prompt_err != nil {
+		log.Warnf("Could not find passphrase file at %s", passphraseFileName)
+		var promptErr error
+		password, promptErr = promptForPassword()
+		if promptErr != nil {
 			log.Fatal(errors.Wrapf(err, "error getting password"))
 		}
 	} else {
 
 		// If the full password is present
-		if len(password) == passphrase_length {
+		if len(password) == passphraseLength {
 			log.Info("Obtained password from file.")
 
 			// If not, user needs to give the remaining bytes
 		} else {
-			remaining_bytes := passphrase_length - len(password)
-			log.Infof("Please enter %d remaining bytes:", remaining_bytes)
+			remainingBytes := passphraseLength - len(password)
+			log.Infof("Please enter %d remaining bytes:", remainingBytes)
 
-			pin, err := read_password()
+			pin, err := readPassword()
 			if err != nil {
 				log.Fatal(errors.Wrapf(err, "error reading pin"))
 			}
 
-			pin_bytes := []byte(pin)
-			old_password := password
-			password = append(old_password, pin_bytes...)
+			pinBytes := []byte(pin)
+			oldPassword := password
+			password = append(oldPassword, pinBytes...)
 		}
 	}
 
@@ -61,30 +61,30 @@ func Authenticate(encryptor *Encryptor) {
 	}
 }
 
-func prompt_for_password() ([]byte, error) {
+func promptForPassword() ([]byte, error) {
 
 	log.Info("Please enter password:")
-	return read_password()
+	return readPassword()
 }
 
-func read_password() ([]byte, error) {
-	byte_password, err := term.ReadPassword(int(syscall.Stdin))
+func readPassword() ([]byte, error) {
+	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "error reading password from input")
 	}
 
-	return byte_password, nil
+	return bytePassword, nil
 }
 
 func testPassword(encryptor *Encryptor) (bool, error) {
 
 	// If the entries folder doesn't exist, user can go ahead and create one
-	entries, err := os.ReadDir(entry_utils.FILE_DIR)
+	entries, err := os.ReadDir(entry_utils.FileDir)
 	if err != nil {
 		log.Warn("Entries folder does not exist, create a new entry to set password.")
 		return true, nil
 	}
-	entries = entry_utils.Filter_entries(entries)
+	entries = entry_utils.FilterEntries(entries)
 
 	// If there aren't any entries, any password is good
 	if len(entries) == 0 {
@@ -92,14 +92,14 @@ func testPassword(encryptor *Encryptor) (bool, error) {
 	}
 
 	entry := entries[0]
-	entry_name := entry.Name()
-	entry_contents, err := os.ReadFile(path.Join(entry_utils.FILE_DIR, entry_name))
+	entryName := entry.Name()
+	entryContents, err := os.ReadFile(path.Join(entry_utils.FileDir, entryName))
 	if err != nil {
-		return false, errors.Wrapf(err, "error reading entry %s", entry_name)
+		return false, errors.Wrapf(err, "error reading entry %s", entryName)
 	}
 
 	// Check if we can decrypt with the password
-	_, err = encryptor.DecryptEntryContents(string(entry_contents))
+	_, err = encryptor.DecryptEntryContents(string(entryContents))
 	if err != nil {
 		return false, errors.Wrapf(err, "error decrypting with the password")
 	}

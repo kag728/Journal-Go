@@ -16,11 +16,11 @@ import (
 // Either opens today's entry if it's already been made, or creates a new one and returns that.
 // The file is named based on the current date
 func GetCurrentEntry() (*os.File, error) {
-	_, dir_err := os.Stat(entry_utils.FILE_DIR)
+	_, dir_err := os.Stat(entry_utils.FileDir)
 	if dir_err != nil {
-		mkdir_err := os.Mkdir(entry_utils.FILE_DIR, 0777)
+		mkdir_err := os.Mkdir(entry_utils.FileDir, 0777)
 		if mkdir_err != nil {
-			return &os.File{}, errors.Wrapf(mkdir_err, "could not create dir %s", entry_utils.FILE_DIR)
+			return &os.File{}, errors.Wrapf(mkdir_err, "could not create dir %s", entry_utils.FileDir)
 		}
 	}
 
@@ -29,7 +29,7 @@ func GetCurrentEntry() (*os.File, error) {
 		return &os.File{}, errors.Wrapf(err, "error getting file name")
 	}
 
-	file_name := path.Join(entry_utils.FILE_DIR, entry_name)
+	file_name := path.Join(entry_utils.FileDir, entry_name)
 	file, open_err := os.Open(file_name)
 	if open_err != nil {
 		file, create_err := os.Create(file_name)
@@ -46,11 +46,11 @@ func GetCurrentEntry() (*os.File, error) {
 
 func get_entry_name() (string, error) {
 
-	entries, err := os.ReadDir(entry_utils.FILE_DIR)
+	entries, err := os.ReadDir(entry_utils.FileDir)
 	if err != nil {
-		return "", errors.Wrapf(err, "could not open directory %s", entry_utils.FILE_DIR)
+		return "", errors.Wrapf(err, "could not open directory %s", entry_utils.FileDir)
 	}
-	entries = entry_utils.Filter_entries(entries)
+	entries = entry_utils.FilterEntries(entries)
 
 	current_time := time.Now()
 	entry_date := fmt.Sprintf("%s_%s_%d_%d", current_time.Weekday(), current_time.Month(),
@@ -83,7 +83,7 @@ func get_entry_name() (string, error) {
 		max_prefix += 1
 	}
 
-	formatted_prefix, err := entry_utils.Fill_prefix(max_prefix)
+	formatted_prefix, err := entry_utils.FillPrefix(max_prefix)
 	if err != nil {
 		return "", errors.Wrapf(err, "error formatting prefix")
 	}

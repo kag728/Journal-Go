@@ -2,6 +2,7 @@ package uploader
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"journal/pkg/journal/entries_io"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const cloud_config = ".internal/cloudconfig"
+const cloudConfig = ".internal/cloudconfig"
 
 type CloudConfigNotFound struct {
 	filename, err string
@@ -21,12 +22,12 @@ func (f *CloudConfigNotFound) Error() string {
 	return fmt.Sprintf("Could not open file: %s due to error: %s", f.filename, f.err)
 }
 
-// Uploads today's entry to the folder specified in the cloud_config file.
+// Upload uploads today's entry to the folder specified in the cloud_config file.
 func Upload() (string, error) {
 
-	cloud_dir, err := get_cloud_dir()
+	cloudDir, err := getCloudDir()
 	if err != nil {
-		return "", &CloudConfigNotFound{filename: cloud_config}
+		return "", &CloudConfigNotFound{filename: cloudConfig}
 	}
 
 	entry, err := entries_io.GetCurrentEntry()
@@ -34,33 +35,38 @@ func Upload() (string, error) {
 		return "", errors.Wrapf(err, "error getting current entry")
 	}
 
-	entry_contents, err := ioutil.ReadFile(entry.Name())
+	entryContents, err := ioutil.ReadFile(entry.Name())
 	if err != nil {
 		return "", errors.Wrapf(err, "could not read editor contents")
 	}
-	defer entry.Close()
+	defer func(entry *os.File) {
+		err := entry.Close()
+		if err != nil {
+			log.Errorf("could not close entry %s", entry.Name())
+		}
+	}(entry)
 
-	entry_name := path.Join(
-		cloud_dir,
+	entryName := path.Join(
+		cloudDir,
 		strings.Split(entry.Name(), "/")[1],
 	)
-	_, err = os.Create(entry_name)
+	_, err = os.Create(entryName)
 	if err != nil {
 		return "", errors.Wrapf(err, "error creating entry in cloud folder")
 	}
 
-	err = ioutil.WriteFile(entry_name, entry_contents, 7777)
+	err = ioutil.WriteFile(entryName, entryContents, 7777)
 	if err != nil {
 		return "", errors.Wrapf(err, "error writing contents to cloud entry")
 	}
 
-	return entry_name, nil
+	return entryName, nil
 }
 
-func get_cloud_dir() (string, error) {
-	cloud_dir, err := os.ReadFile(cloud_config)
+func getCloudDir() (string, error) {
+	cloudDir, err := os.ReadFile(cloudConfig)
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSuffix(string(cloud_dir), "\n"), nil
+	return strings.TrimSuffix(string(cloudDir), "\n"), nil
 }

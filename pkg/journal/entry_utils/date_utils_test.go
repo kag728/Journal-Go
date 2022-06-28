@@ -23,7 +23,7 @@ func Test_get_days_back(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := get_days_back(tt.args.day); got != tt.want {
+			if got := getDaysBack(tt.args.day); got != tt.want {
 				t.Errorf("get_days_back() = %v, want %v", got, tt.want)
 			}
 		})
@@ -48,7 +48,7 @@ func Test_get_month_from_string(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := get_month_from_string(tt.args.month)
+			got, err := getMonthFromString(tt.args.month)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("get_month_from_string() error = %v, wantErr %v", err, tt.wantErr)
 				return

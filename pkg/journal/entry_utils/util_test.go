@@ -41,7 +41,7 @@ func Test_get_prefix_digits(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := get_prefix_digits(tt.args.n); got != tt.want {
+			if got := getPrefixDigits(tt.args.n); got != tt.want {
 				t.Errorf("get_prefix_digits() = %v, want %v", got, tt.want)
 			}
 		})
@@ -91,7 +91,7 @@ func Test_Fill_prefix(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Fill_prefix(tt.args.n)
+			got, err := FillPrefix(tt.args.n)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("fill_prefix() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	clear             string = "clear"
-	editor_location   string = "entries/editor"
-	text_edit_command string = "open"
+	clear           string = "clear"
+	editorLocation  string = "entries/editor"
+	textEditCommand string = "open"
 )
 
-var text_edit_args []string = []string{"-a", "TextEdit", editor_location}
+var textEditArgs = []string{"-a", "TextEdit", editorLocation}
 
 func GetAction() (string, error) {
 
@@ -30,13 +30,13 @@ func GetAction() (string, error) {
 	}
 	input = strings.ToLower(strings.TrimSuffix(input, "\n"))
 
-	if input == read || input == read_all || input == write || input == exit {
+	if input == read || input == readAll || input == write || input == exit {
 		return input, nil
 	}
-	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s or %s", input, read, read_all, write, exit)
+	return "", errors.Wrapf(err, "invalid action: %s, please choose %s or %s or %s or %s", input, read, readAll, write, exit)
 }
 
-func prompt_for_done() error {
+func promptForDone() error {
 
 	log.Info("Please write entry in editor file. Press Enter when done...")
 
@@ -57,8 +57,8 @@ func ClearScreen() {
 	}
 }
 
-func open_editor_in_vim() error {
-	cmd := exec.Command(text_edit_command, text_edit_args...)
+func openEditorInVim() error {
+	cmd := exec.Command(textEditCommand, textEditArgs...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 

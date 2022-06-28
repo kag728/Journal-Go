@@ -15,19 +15,19 @@ import (
 // Print out all entries
 func ReadEntries(encryptor *authentication.Encryptor, one_week bool) error {
 
-	entries, err := os.ReadDir(entry_utils.FILE_DIR)
+	entries, err := os.ReadDir(entry_utils.FileDir)
 	if err != nil {
 		log.Warn("The entries directory does not exist, please create an entry first.")
 		return nil
 	}
 
 	if one_week {
-		entries, err = entry_utils.Filter_entries_for_week(entries)
+		entries, err = entry_utils.FilterEntriesForWeek(entries)
 		if err != nil {
 			return errors.Wrapf(err, "error filtering entries for this week")
 		}
 	} else {
-		entries = entry_utils.Filter_entries(entries)
+		entries = entry_utils.FilterEntries(entries)
 		if err != nil {
 			return errors.Wrapf(err, "error filtering entries for this week")
 		}
@@ -41,12 +41,12 @@ func ReadEntries(encryptor *authentication.Encryptor, one_week bool) error {
 		entry_sections := strings.Split(entry_name, "_")[1:]
 
 		// If it starts with a weekday, add a comma
-		if len(entry_sections) == entry_utils.Max_entry_name_sections-1 {
+		if len(entry_sections) == entry_utils.MaxEntryNameSections-1 {
 			entry_sections[0] = fmt.Sprintf("%s,", entry_sections[0])
 		}
 
 		entry_name_formatted := strings.Join(entry_sections, " ")
-		entry_contents, err := os.ReadFile(path.Join(entry_utils.FILE_DIR, entry_name))
+		entry_contents, err := os.ReadFile(path.Join(entry_utils.FileDir, entry_name))
 		if err != nil {
 			return errors.Wrapf(err, "error reading entry %s", entry_name)
 		}

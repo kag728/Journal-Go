@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"journal/pkg/journal/entry_utils"
 	"os"
@@ -13,84 +14,100 @@ import (
 )
 
 const (
-	EDITOR_FILE_NAME = "editor"
+	EditorFileName = "editor"
 )
 
 type Editor struct {
-	editor_file_name, entry_file_name string
-	decrypted_entry_contents          []byte
-	current_entry, editor_file        *os.File
+	editorFileName, entryFileName string
+	decryptedEntryContents        []byte
+	currentEntry, editorFile      *os.File
 }
 
-// Creates a file called "editor" in the entries/ directory.
+// CreateEditor creates a file called "editor" in the entries/ directory.
 // This is where the entry can be edited in plain text.
 func CreateEditor(entry *os.File, encryptor *Encryptor) (Editor, error) {
 
 	editor := Editor{}
-	editor.current_entry = entry
-	editor.editor_file_name = path.Join(entry_utils.FILE_DIR, EDITOR_FILE_NAME)
-	editor.entry_file_name = path.Join(editor.current_entry.Name())
+	editor.currentEntry = entry
+	editor.editorFileName = path.Join(entry_utils.FileDir, EditorFileName)
+	editor.entryFileName = path.Join(editor.currentEntry.Name())
 	var err error
 
-	editor.editor_file, err = os.Create(editor.editor_file_name)
+	editor.editorFile, err = os.Create(editor.editorFileName)
 	if err != nil {
 		return editor, errors.Wrapf(err, "could not create editor file")
 	}
 
-	entry_contents, err := ioutil.ReadFile(editor.entry_file_name)
+	entryContents, err := ioutil.ReadFile(editor.entryFileName)
 	if err != nil {
-		return editor, errors.Wrapf(err, "error while reading contents of current entry %s", editor.entry_file_name)
+		return editor, errors.Wrapf(err, "error while reading contents of current entry %s", editor.entryFileName)
 	}
 
-	decrypted_entry_contents, err := encryptor.DecryptEntryContents(string(entry_contents))
+	decryptedEntryContents, err := encryptor.DecryptEntryContents(string(entryContents))
 	if err != nil {
 		return editor, errors.Wrapf(err, "error decrypting entry contents")
 	}
-	editor.decrypted_entry_contents = decrypted_entry_contents
+	editor.decryptedEntryContents = decryptedEntryContents
 
 	// Only append a new line if there is already text in the file, if not we start on first line.
-	var new_line string
-	if string(decrypted_entry_contents) != "" {
-		new_line = "\n"
+	var newLine string
+	if string(decryptedEntryContents) != "" {
+		newLine = "\n"
 	}
-	editor_starting_text := fmt.Sprintf("%s%s- [%s] ", decrypted_entry_contents, new_line, time.Now().Format(time.Kitchen))
-	ioutil.WriteFile(editor.editor_file_name, []byte(editor_starting_text), 7777)
+	editorStartingText := fmt.Sprintf("%s%s- [%s] ", decryptedEntryContents, newLine, time.Now().Format(time.Kitchen))
+	err = ioutil.WriteFile(editor.editorFileName, []byte(editorStartingText), 7777)
+	if err != nil {
+		return editor, errors.Wrapf(err, "could not write starting text to editor file")
+	}
 
 	return editor, nil
 }
 
-// Encrypts the contents of the editor file and saves it to today's entry. Then deletes the editor.
+// SaveEditorText encrypts the contents of the editor file and saves it to today's entry. Then deletes the editor.
 func (editor *Editor) SaveEditorText(encryptor *Encryptor) error {
-	editor_contents, err := ioutil.ReadFile(editor.editor_file_name)
+	editorContents, err := ioutil.ReadFile(editor.editorFileName)
 	if err != nil {
 		return errors.Wrapf(err, "could not read editor contents")
 	}
-	defer editor.current_entry.Close()
-	defer editor.editor_file.Close()
+	defer func(currentEntry *os.File) {
+		err := currentEntry.Close()
+		if err != nil {
+			log.Errorf("could not close entry %s", currentEntry.Name())
+		}
+	}(editor.currentEntry)
+	defer func(editorFile *os.File) {
+		err := editorFile.Close()
+		if err != nil {
+			log.Errorf("could not close editor file")
+		}
+	}(editor.editorFile)
 
-	editor_contents = trim_newlines(editor_contents)
-	encrypted_contents, err := encryptor.EncryptEditorContents(string(editor_contents))
+	editorContents = trimNewlines(editorContents)
+	encryptedContents, err := encryptor.EncryptEditorContents(string(editorContents))
 	if err != nil {
 		return errors.Wrapf(err, "error encrypting editor contents")
 	}
-	ioutil.WriteFile(editor.entry_file_name, encrypted_contents, 7777)
+	err = ioutil.WriteFile(editor.entryFileName, encryptedContents, 7777)
+	if err != nil {
+		return errors.Wrapf(err, "could not write encrypted file to %s", editor.entryFileName)
+	}
 
 	return editor.delete()
 }
 
 func (editor *Editor) delete() error {
-	err := os.Remove(editor.editor_file_name)
+	err := os.Remove(editor.editorFileName)
 	if err != nil {
 		return errors.Wrapf(err, "error deleting editor file")
 	}
 	return nil
 }
 
-func trim_newlines(editor_contents []byte) []byte {
-	s_untrimmed := string(editor_contents)
-	s_trimmed := strings.TrimSuffix(s_untrimmed, "\n")
-	if s_trimmed != s_untrimmed {
-		return trim_newlines([]byte(s_trimmed))
+func trimNewlines(editorContents []byte) []byte {
+	sUntrimmed := string(editorContents)
+	sTrimmed := strings.TrimSuffix(sUntrimmed, "\n")
+	if sTrimmed != sUntrimmed {
+		return trimNewlines([]byte(sTrimmed))
 	}
-	return []byte(s_trimmed)
+	return []byte(sTrimmed)
 }
