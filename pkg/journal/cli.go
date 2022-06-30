@@ -16,12 +16,15 @@ const (
 	textEditCommand string = "open"
 )
 
-var textEditArgs = []string{"-a", "TextEdit", editorLocation}
+var textEditArgs = []string{"-a", "Sublime Text", editorLocation}
 
 func GetAction() (string, error) {
 
-	log.Info("Please enter \n\tr to read this week's entries \n\tra to read all" +
-		"\n\tw to write \n\tx to exit:\n")
+	log.Info("Please enter " +
+		"\n\tr to read this week's entries " +
+		"\n\tra to read all" +
+		"\n\tw to write " +
+		"\n\tx to exit:\n")
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
@@ -64,7 +67,8 @@ func openEditorInVim() error {
 
 	err := cmd.Run()
 	if err != nil {
-		return errors.Wrapf(err, "error opening editor in vim. Please make sure vim is installed and on the Path.")
+		return errors.Wrapf(err, "error opening editor in specified text editor. "+
+			"Please make sure the command is correct.")
 	}
 	return nil
 }
