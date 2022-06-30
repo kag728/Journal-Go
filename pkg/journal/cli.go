@@ -2,6 +2,7 @@ package journal
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -20,11 +21,31 @@ var textEditArgs = []string{"-a", "Sublime Text", editorLocation}
 
 func GetAction() (string, error) {
 
-	log.Info("Please enter " +
-		"\n\tr to read this week's entries " +
-		"\n\tra to read all" +
-		"\n\tw to write " +
-		"\n\tx to exit:\n")
+	type CommandLabel struct {
+		command, label string
+	}
+
+	commandLabels := []CommandLabel{
+		{read, "to read this week's entries"},
+		{readAll, "to read all"},
+		{write, "to write"},
+		{exit, "to exit"},
+	}
+
+	numberOfCommandChars := 4
+	var commandLabelStrings []string
+	for _, commandLabel := range commandLabels {
+		spaces := ""
+		for i := 0; i < numberOfCommandChars-len(commandLabel.command); i++ {
+			spaces += " "
+		}
+		commandLabelStrings = append(commandLabelStrings, "  "+commandLabel.command+spaces+commandLabel.label)
+	}
+
+	log.Infof("Please enter")
+	for _, label := range commandLabelStrings {
+		fmt.Println(label)
+	}
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
