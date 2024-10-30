@@ -19,3 +19,13 @@ Steps
   5. Open `entries/editor` to write your entry, save, then press enter on terminal.
       * This will delete the editor file and save it's encrypted contents into a timestamped entry file in `entries/`.
   6. To read your entries, type `r` instead of `w` after creating your first entry. 
+
+# Configuring the Password
+
+The password is now stored in a YAML file instead of `.internal/.passphrase`. To configure the password, create a `config.yaml` file in the project directory with the following content:
+
+```yaml
+password: "your_password_here"
+```
+
+Replace `"your_password_here"` with your actual password.

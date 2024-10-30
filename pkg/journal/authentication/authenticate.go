@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/term"
+	"github.com/spf13/viper"
 )
 
 // File containing your passphrase
@@ -19,37 +20,27 @@ const (
 
 func Authenticate(encryptor *Encryptor) {
 
-	password, err := os.ReadFile(passphraseFileName)
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
 	if err != nil {
-		log.Warnf("Could not find passphrase file at %s", passphraseFileName)
+		log.Fatalf("Error reading config file, %s", err)
+	}
+
+	password := viper.GetString("password")
+	if password == "" {
+		log.Warnf("Could not find password in config file")
 		var promptErr error
 		password, promptErr = promptForPassword()
 		if promptErr != nil {
 			log.Fatal(errors.Wrapf(err, "error getting password"))
 		}
 	} else {
-
-		// If the full password is present
-		if len(password) == passphraseLength {
-			log.Info("Obtained password from file.")
-
-			// If not, user needs to give the remaining bytes
-		} else {
-			remainingBytes := passphraseLength - len(password)
-			log.Infof("Please enter %d remaining bytes:", remainingBytes)
-
-			pin, err := readPassword()
-			if err != nil {
-				log.Fatal(errors.Wrapf(err, "error reading pin"))
-			}
-
-			pinBytes := []byte(pin)
-			oldPassword := password
-			password = append(oldPassword, pinBytes...)
-		}
+		log.Info("Obtained password from config file.")
 	}
 
-	encryptor.SetPassword(password)
+	encryptor.SetPassword([]byte(password))
 
 	authenticated, err := testPassword(encryptor)
 	if err != nil {
